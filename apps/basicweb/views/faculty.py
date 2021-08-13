@@ -18,6 +18,7 @@ def list_values(request):
     GROUP BY T3.id,T3.Name
     """ % ('%' + q_str + '%')
 
+#
     response = sqlhelper.get_db_data_dict(sql,['id', 'name', 'number'])
     if response['status']:
         return JsonResponse({'status':True, 'data':response['data']})
