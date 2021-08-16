@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-2xcogy2c8f9yea5e1)ol1(r+600$h-5*vd186$*yz8)+)w-jk$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -52,9 +52,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'apps', 'studentweb', 'templates'),
-            os.path.join(BASE_DIR, 'apps', 'mainweb', 'templates'),
-            os.path.join(BASE_DIR, 'apps', 'basicweb', 'templates'),
+            #os.path.join(BASE_DIR, 'apps', 'studentweb', 'templates'),
+            #os.path.join(BASE_DIR, 'apps', 'mainweb', 'templates'),
+            #os.path.join(BASE_DIR, 'apps', 'basicweb', 'templates'),
         ]
         ,
         'APP_DIRS': True,
@@ -133,7 +133,7 @@ STATICFILES_DIRS = [
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 设置 X-Frame_option
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+X_FRAME_OPTIONS = "SAMEORIGIN"
