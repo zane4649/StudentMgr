@@ -24,17 +24,17 @@
             <div class="layui-inline" style="width: 30%">
                 <label class="layui-form-label" for="queryStr"><b>输入条件：</b></label>
                 <div class="layui-input-block">
-                    <input type="text" name="queryStr" class="layui-input">
+                    <input type="text" name="queryStr" id="queryStr" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-inline">
-                <button type="button" class="layui-btn">
-                    <i class="layui-icon layui-icon-search"></i>  查询</button>
-                    <button type="button" class="layui-btn">
-                        <i class="layui-icon layui-icon-list"></i>  全部</button>
-                    <button type="button" class="layui-btn">
-                        <i class="layui-icon layui-icon-add-circle-fine"></i>  添加</button>
+                <button type="button" id="btnQuery" class="layui-btn">
+                    <i class="layui-icon layui-icon-search"></i>&nbsp;查询</button>
+                    <button type="button" id="btnAll" class="layui-btn">
+                        <i class="layui-icon layui-icon-list"></i>&nbsp; 全部</button>
+                    <button type="button" id="btnAdd" class="layui-btn">
+                        <i class="layui-icon layui-icon-add-circle-fine"></i>&nbsp; 添加</button>
             </div>
         </div>
 
@@ -51,6 +51,7 @@
 
 <!-- 引入 js 文件 -->
 <script src="{% static 'plugin/layui/layui.js' %}"></script>
+{% block js %} {% endblock %}
 
 <script>
     //入口函数

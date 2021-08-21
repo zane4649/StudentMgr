@@ -8,12 +8,6 @@
 
 <!-- 修改当前页面css -->
 {% block css %}
-    <style>
-        .contentArea i:hover {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
 {% endblock %}
 
 <!-- 添加面包屑的名称 -->
@@ -36,7 +30,9 @@
         $(function () {
             // 加载院系数据展示在页面
             loadData();
-            //buttonClick();
+
+            // 响应所有的按钮点击
+            buttonClick();
         });
 
         // 加载数据
@@ -47,10 +43,70 @@
                 method: 'get',
                 dataType: 'json',
                 success: function (res) {
-                    console.log(res);
+                    if (res.status) {
+                        showInPage(res.data);
+                    } else {
+                        alert(res.error)
+                    }
                 }
             })
         }
 
+        // 院系信息展示在页面
+        function showInPage(data) {
+            // 获取对象
+            let targetContainer = $('.contentArea');
+            // 清空集合
+            targetContainer.empty();
+            // 遍历
+            $.each(data, function (name, value) {
+
+                // 新建一个外层的集合
+                let child = $('<div>').attr('class', 'layui-col-xs6 layui-col-sm6 layui-col-md4 layui-col-lg2').css('margin-bottom', '20px');
+                // 新建一个子集集合
+                let childInner = $('<div>').attr('style', 'width: 80%;height: 200px;background-color:lightblue;border-radius: 10px;margin: auto;text-align: center;font-size:18px;').appendTo(child);
+                // 新建一个div
+                $('<div>').text(value.name).attr('name', value.id).attr('style', 'font-weight: bold;color:darkred;line-height:80px;').appendTo(childInner);
+                // 附加专业数量
+                $('<div>').html("专业数：" + value.number).attr('style', 'line-height:80px').appendTo(childInner);
+                // 附加
+                $('<i>').attr('id', 'btnEdit').attr('name', value.name).attr('code', value.id).attr('class', 'fa fa-edit').attr('aria-hidden', true).appendTo(childInner);
+                $('<span>').html("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").appendTo(childInner);
+                $('<i>').attr('id', 'btnDel').attr('name', value.name).attr('code', value.id).attr('class', 'fa fa-trash').attr('aria-hidden', true).appendTo(childInner);
+                // 附加到
+                child.appendTo(targetContainer);
+
+            });
+        }
+
+        function buttonClick() {
+            // 查询按钮
+            $('#btnQuery').on('click', function () {
+                // 发起Ajax请求
+                $.ajax({
+                    url: "{% url 'list_faculty' %}",
+                    method: 'post',
+                    data: {
+                        'queryStr': $('#queryStr').val().replace(" ", ""),
+                        'csrfmiddlewaretoken': "{{ csrf_token }}"
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status) {
+                            showInPage(res.data);
+                        } else {
+                            alert(res.error)
+                        }
+                    }
+                })
+
+            });
+
+            // 显示全部
+            $('#btnAll').on('click', function () {
+                // 页面重新加载
+                location.reload();
+            });
+        }
     </script>
 {% endblock %}
