@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'basicweb',
     'mainweb',
     'studentweb',
-
 ]
 
 MIDDLEWARE = [
@@ -52,11 +51,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            #os.path.join(BASE_DIR, 'apps', 'studentweb', 'templates'),
-            #os.path.join(BASE_DIR, 'apps', 'mainweb', 'templates'),
-            #os.path.join(BASE_DIR, 'apps', 'basicweb', 'templates'),
-        ]
-        ,
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

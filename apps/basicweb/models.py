@@ -1,6 +1,5 @@
 from django.db import models
 
-
 # ==== 院系管理 ===
 class Faculty(models.Model):
     name = models.CharField(verbose_name="院系名称", max_length=100, unique=True, null=False)

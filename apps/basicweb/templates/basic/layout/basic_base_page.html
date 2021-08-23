@@ -30,14 +30,16 @@
 
             <div class="layui-inline">
                 <button type="button" id="btnQuery" class="layui-btn">
-                    <i class="layui-icon layui-icon-search"></i>&nbsp;查询</button>
-                    <button type="button" id="btnAll" class="layui-btn">
-                        <i class="layui-icon layui-icon-list"></i>&nbsp; 全部</button>
-                    <button type="button" id="btnAdd" class="layui-btn">
-                        <i class="layui-icon layui-icon-add-circle-fine"></i>&nbsp; 添加</button>
+                    <i class="layui-icon layui-icon-search"></i>&nbsp;查询
+                </button>
+                <button type="button" id="btnAll" class="layui-btn">
+                    <i class="layui-icon layui-icon-list"></i>&nbsp;全部
+                </button>
+                <button type="button" id="btnAdd" class="layui-btn">
+                    <i class="layui-icon layui-icon-add-circle-fine"></i>&nbsp;添加
+                </button>
             </div>
         </div>
-
     </form>
 </div>
 
@@ -56,11 +58,13 @@
 <script>
     //入口函数
     $(function (){
+        // 初始化导航
         initBreadcrumb();
-    })
+    });
 
     function initBreadcrumb(){
         layui.use('element', function (){
+            // 实例化一个对象
             let element = layui.element;
         })
     }
