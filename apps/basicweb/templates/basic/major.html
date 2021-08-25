@@ -3,7 +3,7 @@
 
 <!-- 修改标题 -->
 {% block title %}
-专业管理
+    专业管理
 {% endblock %}
 
 <!-- 修改当前页面css -->
@@ -18,10 +18,38 @@
 
 <!-- 修改当前页面的内容 -->
 {% block content %}
-
+    <!-- 内容03 -->
+    <table class="layui-hide" id="tableArea"></table>
 {% endblock %}
 
 <!-- 添加当前页面的js文件 -->
 {% block js %}
+<script>
+    // 入口函数
+    $(function (){
+        // 初始化表格
+        initTable();
+    });
+
+    // 初始化表格
+    function initTable(){
+        // 使用layui table插件
+        layui.use('table', function (){
+            //实例化一个表格对象
+            let table = layui.table;
+
+            // 开始渲染表格
+            table.render({
+                elem: '#tableArea'
+                ,url: "{% url 'list_major' %}"
+                ,cols:[[
+                    {type:'numbers', width:60, title: '编号', align:'center',sort: true}
+                    ,{field:'faculty__name', width:280, title: '院系名称', align:'center', sort: true}
+                    ,{field:'name',  title: '专业名称', align:'center', sort: true}
+                ]]
+            });
+        })
+    }
+</script>
 
 {% endblock %}

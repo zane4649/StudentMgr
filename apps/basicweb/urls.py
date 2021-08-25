@@ -14,4 +14,7 @@ urlpatterns = [
 
     # 专业管理
     path('major/', major.index, name='major'),
+    path('major/list/', major.list_values, name='list_major'),
 ]
+
+
