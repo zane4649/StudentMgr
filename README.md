@@ -1,9 +1,9 @@
-## 学生信息管理系统
+# 学生信息管理系统
 
-# 院系管理
+## 院系管理
 ![image](https://user-images.githubusercontent.com/26055479/130477801-7e952f35-90fe-44e6-8b46-259365ce47de.png)
 
-# 专业管理
+## 专业管理
 ![image](https://user-images.githubusercontent.com/26055479/131522444-78fd9d76-6dba-45fc-9b62-532daffc488c.png)
 
 
