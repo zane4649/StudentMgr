@@ -45,7 +45,7 @@ def add_value(request):
         Faculty.objects.create(name=name)
         return JsonResponse({'status': True})
     except Exception as err:
-        return JsonResponse({'status': False, 'error':'写入数据库失败:' + str(err)})
+        return JsonResponse({'status': False, 'error': '写入数据库失败:' + str(err)})
 
 def edit_value(request):
     """修改"""
