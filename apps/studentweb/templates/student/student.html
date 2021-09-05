@@ -1,10 +1,143 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>学生信息管理</h1>
-</body>
-</html>
+{% extends 'student/layout/student_base_page.html' %}
+
+<!-- 标题-->
+{% block title %}
+    学员信息
+{% endblock %}
+
+<!-- 添加CSS -->
+{% block css %}
+
+{% endblock %}
+
+<!-- 设置面包块导航名称 -->
+{% block breadcrumb %}
+    学员信息
+{% endblock %}
+
+<!-- 添加内容 -->
+{% block content %}
+    <!-- 内容02：查询区域-->
+    <div class="queryArea" style="margin-top: 20px;">
+        <form class="layui-form">
+            {% csrf_token %}
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline" style="width: 20%">
+                        <label class="layui-form-label" for="sno"><b>学号/姓名: </b></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sno" id="sno" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" for="faculty"><b>院系: </b></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="faculty" id="faculty" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" for="major"><b>专业: </b></label>
+                        <div class="layui-input-block">
+                            <input type="text" name="major" id="major" class="layui-input">
+                        </div>
+                    </div>
+
+                    <!-- 添加3个按钮 -->
+                    <button type="button" id="btnQuery" class="layui-btn">
+                        <i class="layui-icon layui-icon-search"></i>&nbsp;查询
+                    </button>
+                    <button type="button" id="btnAll" class="layui-btn">
+                        <i class="layui-icon layui-icon-list"></i>&nbsp;全部
+                    </button>
+                    <button type="button" id="btnAdd" class="layui-btn">
+                        <i class="layui-icon layui-icon-add-circle-fine"></i>&nbsp;添加
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- 内容03：表格-->
+    <table class="layui-hide" id="tableStudent"></table>
+
+    <!--内容04  表格中的按钮 -->
+    <script type="text/html" id="tableButton">
+        <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
+            <i class="layui-icon layui-icon-more"></i>查看
+        </a>
+        <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
+            <i class="layui-icon layui-icon-edit"></i>编辑
+        </a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
+            <i class="layui-icon layui-icon-delete"></i>删除
+        </a>
+    </script>
+
+{% endblock %}
+
+<!-- 添加JS -->
+{% block js %}
+    <script>
+        // 入口函数
+        $(function () {
+            // 初始化表格
+            initTable();
+        });
+
+        // 初始化表格
+        function initTable() {
+            // 试用贴table插件
+            layui.use('table', function () {
+                // 实例化一个表格
+                let table = layui.table;
+
+                // 渲染表格
+                table.render({
+                    elem: '#tableStudent'
+                    ,even: true //开启表格斑马线的效果
+                    , url: '{% url 'list_student' %}' //请求数据的后台接口
+                    ,method: 'post'
+                    ,where: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    }
+                    , cols: [[
+                        {type: 'numbers', width: 60, title: '编号', align: 'center', sort: true}
+                        , {field: 'sno', width: 120, title: '学号', align: 'center', sort: true}
+                        , {field: 'name', width: 100, title: '姓名', align: 'center', sort: true}
+                        , {field: 'gender', width: 80, title: '性别', align: 'center', sort: true}
+                        , {field: 'mobile', width: 140, title: '手机号码', align: 'center', sort: true}
+                        , {field: 'faculty__name', width: 220, title: '院系名称', align: 'center', sort: true}
+                        , {field: 'major__name', width: 200, title: '专业名称', align: 'center', sort: true}
+                        , {field: 'status', title: '状态', align: 'center', sort: true}
+                        , {fixed: 'right', title: '操作', width: '20%', align: 'center', toolbar: '#tableButton'}
+                    ]]
+                    ,page: true //启用nginx
+                    ,limit: 12  //设置分页的每页记录的条数
+                    ,limits: [12, 15, 30, 50, 75 ,100]
+                    ,done: function (res, current, count){
+                        $('thead tr').css({'background-color':'#009688', 'color':'white'});
+                    }
+                })
+            })
+        }
+    </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
