@@ -78,9 +78,9 @@
                 $('<div>').html("专业数：" + value.number).attr('style', 'line-height:80px').appendTo(childInner);
                 // 附加
                 //$('<i>').attr('id', 'btnEdit').attr('class', 'layui-icon layui-icon-edit').appendTo(childInner);
-                $('<i>').attr('id', 'btnEdit').attr('name', value.name).attr('code', value.id).attr('class', 'layui-icon layui-icon-edit').appendTo(childInner);
+                $('<i>').attr('id', 'btnEdit').attr('name', value.name).attr('code', value.id).attr('class', 'fa fa-edit').attr('aria-hidden', true).appendTo(childInner);
                 $('<span>').html("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").appendTo(childInner);
-               $('<i>').attr('id', 'btnDel').attr('name', value.name).attr('code', value.id).attr('class', 'layui-icon layui-icon-delete').appendTo(childInner);
+               $('<i>').attr('id', 'btnDel').attr('name', value.name).attr('code', value.id).attr('class', 'fa fa-trash').attr('aria-hidden', true).appendTo(childInner);
                 //$('<i>').attr('id', 'btnDel').attr('class', 'layui-icon layui-icon-delete').appendTo(childInner);
                 // 附加到
                 child.appendTo(targetContainer);

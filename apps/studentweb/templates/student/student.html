@@ -53,15 +53,17 @@
                     </div>
 
                     <!-- 添加3个按钮 -->
-                    <button type="button" id="btnQuery" class="layui-btn">
-                        <i class="layui-icon layui-icon-search"></i>&nbsp;查询
-                    </button>
-                    <button type="button" id="btnAll" class="layui-btn">
-                        <i class="layui-icon layui-icon-list"></i>&nbsp;全部
-                    </button>
-                    <button type="button" id="btnAdd" class="layui-btn">
-                        <i class="layui-icon layui-icon-add-circle-fine"></i>&nbsp;添加
-                    </button>
+                    <div class="layui-inline">
+                        <button type="button" id="btnQuery" class="layui-btn">
+                            <i class="fa fa-search" ></i>&nbsp;查询
+                        </button>
+                        <button type="button" id="btnAll" class="layui-btn">
+                            <i class="fa fa-bars" aria-hidden="true"></i>&nbsp;&nbsp;全部
+                        </button>
+                        <button type="button" id="btnAdd" class="layui-btn">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -74,13 +76,13 @@
     <!--内容04  表格中的按钮 -->
     <script type="text/html" id="tableButton">
         <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
-            <i class="layui-icon layui-icon-more"></i>查看
+            <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看
         </a>
         <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
-            <i class="layui-icon layui-icon-edit"></i>编辑
+            <i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑
         </a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
-            <i class="layui-icon layui-icon-delete"></i>删除
+            <i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;删除
         </a>
     </script>
 
@@ -90,7 +92,7 @@
 {% block js %}
     <script>
         // 定义查询状态值 -- 全局变量
-        let STATUS =  false;
+        let STATUS = false;
 
         // 入口函数
         $(function () {
@@ -177,18 +179,18 @@
         }
 
         // 加载院系的数据下拉到专业
-        function loadMajorByFaculty(){
+        function loadMajorByFaculty() {
             // 使用layui
-            layui.use('form', function (){
+            layui.use('form', function () {
                 // 示例化一个form
                 let form = layui.form;
 
                 // 侦听院系下来的选择框
-                form.on('select(q_faculty)', function (data){
+                form.on('select(q_faculty)', function (data) {
                     let selectData = data.value;
                     // 获取选择传递的院系编号
                     $('#q_major').html("");
-                    $('<option>').attr('value',"").text("请选择专业").appendTo('#q_major');
+                    $('<option>').attr('value', "").text("请选择专业").appendTo('#q_major');
                     // 使用ajax请求
                     $.ajax({
                         url: "{% url 'query_major' %}",
@@ -198,20 +200,20 @@
                             csrfmiddlewaretoken: "{{ csrf_token }}"
                         },
                         dataType: 'json',
-                        success: function (res){
+                        success: function (res) {
                             if (res.status) {
-                            // 通过jquery遍历加入下拉框
-                            $.each(res.data, (index, value) => {
-                                // 新建option标签
-                                $('<option>').attr('value', value.id).text(value.name).appendTo('#q_major');
-                            })
-                            // 重新渲染
-                            form.render();
-                        } else {
-                            layui.use('layui', function () {
-                                layui.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
-                            })
-                        }
+                                // 通过jquery遍历加入下拉框
+                                $.each(res.data, (index, value) => {
+                                    // 新建option标签
+                                    $('<option>').attr('value', value.id).text(value.name).appendTo('#q_major');
+                                })
+                                // 重新渲染
+                                form.render();
+                            } else {
+                                layui.use('layui', function () {
+                                    layui.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
+                                })
+                            }
                         }
                     })
                 })
@@ -219,18 +221,18 @@
         }
 
         // 所有按钮的响应
-        function buttonClick(){
+        function buttonClick() {
             // 响应查询的按钮
-            $('#btnQuery').on('click', function (){
+            $('#btnQuery').on('click', function () {
                 // 判断复选框是否选中
-                STATUS =  $('#q_status').next().hasClass('layui-form-checked');
+                STATUS = $('#q_status').next().hasClass('layui-form-checked');
                 console.log(STATUS);
                 // 渲染表格
                 initTable();
             });
 
             // 显示全部的按钮
-            $('#btnAll').on('click', function (){
+            $('#btnAll').on('click', function () {
                 location.reload();
             });
         }
@@ -238,11 +240,11 @@
         // 监听复选框的状态
         function checkboxStatus() {
             // 使用form表单
-            layui.use('form', function (){
+            layui.use('form', function () {
                 // 实例化回调函数
                 let form = layui.form;
                 // 侦听
-                form.on('checkbox(q_status)', function (obj){
+                form.on('checkbox(q_status)', function (obj) {
                     console.log(obj.value);
                 })
             })

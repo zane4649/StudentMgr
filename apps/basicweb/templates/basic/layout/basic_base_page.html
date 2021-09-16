@@ -6,6 +6,9 @@
     <title>{% block title %} {% endblock %}</title>
     <!-- 引入 Layui的样式文件 -->
     <link rel="stylesheet" href="{% static 'plugin/layui/css/layui.css' %}">
+
+    <!-- 引入font-awesome css文件 -->
+    <link rel="stylesheet" href="{% static 'plugin/font-awesome/css/font-awesome.min.css' %}">
     {% block css %} {% endblock %}
 </head>
 
@@ -30,13 +33,13 @@
 
             <div class="layui-inline">
                 <button type="button" id="btnQuery" class="layui-btn">
-                    <i class="layui-icon layui-icon-search"></i>&nbsp;查询
+                   <i class="fa fa-search" ></i>&nbsp;查询
                 </button>
                 <button type="button" id="btnAll" class="layui-btn">
-                    <i class="layui-icon layui-icon-list"></i>&nbsp;全部
+                    <i class="fa fa-bars" aria-hidden="true"></i>&nbsp;全部
                 </button>
                 <button type="button" id="btnAdd" class="layui-btn">
-                    <i class="layui-icon layui-icon-add-circle-fine"></i>&nbsp;添加
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;添加
                 </button>
             </div>
         </div>
