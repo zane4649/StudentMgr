@@ -55,7 +55,6 @@ def edit_value(request):
     except Exception as err:
         return JsonResponse({'status': False, 'error': '修改数据出现异常,具体报错：' + str(err)})
 
-
 def del_value(request):
     """删除"""
     # 接受传递的ID
@@ -70,6 +69,18 @@ def del_value(request):
         return JsonResponse({'status': True})
     except Exception as err:
         return JsonResponse({'status': False, 'error': '删除数据提交到数据库出现异常,具体报错：' + str(err)})
+
+def query_value(request):
+    """查询"""
+    # 获取传递过来的值
+    q_id = request.POST.get('id')
+    try:
+        # 获取数据
+        objs = list(Major.objects.filter(faculty_id=q_id).values('id', 'name'))
+        # 返回
+        return JsonResponse({'status':True, 'data':objs})
+    except Exception as err:
+        return JsonResponse({'status': False, 'error':"获取专业的数据出现异常，具体异常：" + str(err)})
 
 
 

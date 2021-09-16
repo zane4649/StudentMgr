@@ -23,23 +23,33 @@
             {% csrf_token %}
             <div class="layui-form">
                 <div class="layui-form-item">
-                    <div class="layui-inline" style="width: 20%">
-                        <label class="layui-form-label" for="sno"><b>学号/姓名: </b></label>
+                    <div class="layui-inline" style="width:20%">
+                        <label class="layui-form-label" for="q_sno_name"><b>学号/姓名: </b></label>
                         <div class="layui-input-block">
-                            <input type="text" name="sno" id="sno" class="layui-input">
+                            <input type="text" name="q_sno_name" id="q_sno_name" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label" for="faculty"><b>院系: </b></label>
+                        <label class="layui-form-label" for="q_faculty"><b>院系: </b></label>
                         <div class="layui-input-block">
-                            <input type="text" name="faculty" id="faculty" class="layui-input">
+                            <!-- input type="text" name="q_faculty" id="q_faculty" class="layui-input" -->
+                            <select name="q_faculty" id="q_faculty" lay-search="" lay-filter="q_faculty">
+                                <option value="">请选择院系</option>
+                            </select>
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label" for="major"><b>专业: </b></label>
+                        <label class="layui-form-label" for="q_major"><b>专业: </b></label>
                         <div class="layui-input-block">
-                            <input type="text" name="major" id="major" class="layui-input">
+                            <!--input type="text" name="q_major" id="q_major" class="layui-input" -->
+                            <select name="q_major" id="q_major" lay-search="">
+                                <option value="">请选择专业</option>
+                            </select>
                         </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <input type="checkbox" id="q_status" name="q_status" lay-filter="q_status" title="在校">
                     </div>
 
                     <!-- 添加3个按钮 -->
@@ -79,10 +89,19 @@
 <!-- 添加JS -->
 {% block js %}
     <script>
+        // 定义查询状态值 -- 全局变量
+        let STATUS =  false;
+
         // 入口函数
         $(function () {
             // 初始化表格
             initTable();
+            // 加载院系的信息
+            loadFaculty();
+            // 跟进所选院系加载专业
+            loadMajorByFaculty();
+            // 所有的按钮的响应
+            buttonClick();
         });
 
         // 初始化表格
@@ -95,11 +114,15 @@
                 // 渲染表格
                 table.render({
                     elem: '#tableStudent'
-                    ,even: true //开启表格斑马线的效果
+                    , even: true //开启表格斑马线的效果
                     , url: '{% url 'list_student' %}' //请求数据的后台接口
-                    ,method: 'post'
-                    ,where: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    , method: 'post'
+                    , where: {
+                        'q_sno_name': $('#q_sno_name').val(),
+                        'q_faculty': $('#q_faculty').val(),
+                        'q_major': $('#q_major').val(),
+                        'q_status': STATUS,
+                        'csrfmiddlewaretoken': "{{ csrf_token }}"
                     }
                     , cols: [[
                         {type: 'numbers', width: 60, title: '编号', align: 'center', sort: true}
@@ -112,12 +135,115 @@
                         , {field: 'status', title: '状态', align: 'center', sort: true}
                         , {fixed: 'right', title: '操作', width: '20%', align: 'center', toolbar: '#tableButton'}
                     ]]
-                    ,page: true //启用nginx
-                    ,limit: 12  //设置分页的每页记录的条数
-                    ,limits: [12, 15, 30, 50, 75 ,100]
-                    ,done: function (res, current, count){
-                        $('thead tr').css({'background-color':'#009688', 'color':'white'});
+                    , page: true //启用nginx
+                    , limit: 12  //设置分页的每页记录的条数
+                    , limits: [12, 15, 30, 50, 75, 100]
+                    , done: function (res, current, count) {
+                        $('thead tr').css({'background-color': '#009688', 'color': 'white'});
                     }
+                })
+            })
+        }
+
+        // 加载院系数组的下拉框
+        function loadFaculty() {
+            // 使用layui中的form插件
+            layui.use('form', function () {
+                // 实例化一个form对象
+                let form = layui.form;
+                // 通过ajax获取数据并加载到下拉框
+                $.ajax({
+                    url: "{% url 'list_faculty' %}",
+                    method: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log(res);
+                        if (res.status) {
+                            // 通过jquery遍历加入下拉框
+                            $.each(res.data, (index, value) => {
+                                // 新建option标签
+                                $('<option>').attr('value', value.id).text(value.name).appendTo('#q_faculty');
+                            })
+                            // 重新渲染
+                            form.render();
+                        } else {
+                            layui.use('layui', function () {
+                                layui.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
+                            })
+                        }
+                    }
+                })
+            })
+        }
+
+        // 加载院系的数据下拉到专业
+        function loadMajorByFaculty(){
+            // 使用layui
+            layui.use('form', function (){
+                // 示例化一个form
+                let form = layui.form;
+
+                // 侦听院系下来的选择框
+                form.on('select(q_faculty)', function (data){
+                    let selectData = data.value;
+                    // 获取选择传递的院系编号
+                    $('#q_major').html("");
+                    $('<option>').attr('value',"").text("请选择专业").appendTo('#q_major');
+                    // 使用ajax请求
+                    $.ajax({
+                        url: "{% url 'query_major' %}",
+                        method: 'post',
+                        data: {
+                            id: selectData,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        dataType: 'json',
+                        success: function (res){
+                            if (res.status) {
+                            // 通过jquery遍历加入下拉框
+                            $.each(res.data, (index, value) => {
+                                // 新建option标签
+                                $('<option>').attr('value', value.id).text(value.name).appendTo('#q_major');
+                            })
+                            // 重新渲染
+                            form.render();
+                        } else {
+                            layui.use('layui', function () {
+                                layui.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
+                            })
+                        }
+                        }
+                    })
+                })
+            })
+        }
+
+        // 所有按钮的响应
+        function buttonClick(){
+            // 响应查询的按钮
+            $('#btnQuery').on('click', function (){
+                // 判断复选框是否选中
+                STATUS =  $('#q_status').next().hasClass('layui-form-checked');
+                console.log(STATUS);
+                // 渲染表格
+                initTable();
+            });
+
+            // 显示全部的按钮
+            $('#btnAll').on('click', function (){
+                location.reload();
+            });
+        }
+
+        // 监听复选框的状态
+        function checkboxStatus() {
+            // 使用form表单
+            layui.use('form', function (){
+                // 实例化回调函数
+                let form = layui.form;
+                // 侦听
+                form.on('checkbox(q_status)', function (obj){
+                    console.log(obj.value);
                 })
             })
         }

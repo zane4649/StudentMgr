@@ -18,6 +18,21 @@ urlpatterns = [
     path('major/add/', major.add_value, name='add_major'),
     path('major/edit/', major.edit_value, name='edit_major'),
     path('major/del/', major.del_value, name='del_major'),
+    path('major/query/', major.query_value, name='query_major'),
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
