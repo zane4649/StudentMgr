@@ -71,11 +71,11 @@
     </div>
 
     <!-- 内容03：表格-->
-    <table class="layui-hide" id="tableStudent"></table>
+    <table class="layui-hide" id="tableStudent" lay-filter="tableStudent"></table>
 
     <!--内容04  表格中的按钮 -->
     <script type="text/html" id="tableButton">
-        <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
+        <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">
             <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;查看
         </a>
         <a id="btnEdit" class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
@@ -186,6 +186,8 @@
     <script>
         // 定义查询状态值 -- 全局变量
         let STATUS = false;
+        // 定义一个全局变量，记录当前哪个操作，1-添加 2-查看详情 3-修改
+        let Operator = 0;
 
         // 入口函数
         $(function () {
@@ -237,6 +239,26 @@
                     , limits: [12, 15, 30, 50, 75, 100]
                     , done: function (res, current, count) {
                         $('thead tr').css({'background-color': '#009688', 'color': 'white'});
+                    }
+                })
+
+                // 侦听表格操作
+                table.on('tool(tableStudent)', function (obj) {
+                    // 获取当前行的数据
+                    let lineData = obj.data;
+                    // 判断做的什么操作
+                    if(obj.event === 'detail'){
+                        // 修改operator
+                        Operator = 2;
+                        // 加载弹出层
+                        loadLayer("<b style='color:navy'>查看学生详情</b>")
+                        } else if(obj.event === 'edit'){
+                        // 修改operator
+                        Operator = 3;
+                        // 加载弹出层
+                        loadLayer("<b style='color:navy'>修改学生信息</b>")
+                        } else if(obj.event=== 'del'){
+                        // 删除
                     }
                 })
             })
@@ -375,7 +397,9 @@
 
             // 添加按钮
             $('#btnAdd').on('click', function () {
-                loadLayer();
+                // 修改Operator的值
+                Operator= 1;
+                loadLayer("<b style='color: navy'>添加学生</b>");
             })
         }
 
@@ -394,18 +418,31 @@
         }
 
         // 加载弹出框
-        function loadLayer() {
+        function loadLayer(title) {
+            // 弹出层的按钮准备
+            let btns = ["确定","取消"];
+            // 判断
+            if (Operator === 2){
+                btns = ['关闭']
+            }
+
             layui.use(['layer', 'form'], function () {
                 let layer = layui.layer;
                 let form = layer.form;
 
                 layer.open({
                     type: 1,
-                    title: '添加',
+                    title: title,
                     area: ['50%', '80%'],
                     content: $('.layerArea'),
-                    btn: ['确定', '取消'],
+                    btn: btns,
                     resize: false,
+
+                    // 函数
+                    yes: function (index, layero){
+                        // 如果是查看详情的按钮，点击按钮，直接关闭
+                        if (Operator ===2){ layer.close(index);}
+                    }
                 })
             })
         }
