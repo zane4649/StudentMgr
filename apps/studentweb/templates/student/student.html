@@ -55,7 +55,7 @@
                     <!-- 添加3个按钮 -->
                     <div class="layui-inline">
                         <button type="button" id="btnQuery" class="layui-btn">
-                            <i class="fa fa-search" ></i>&nbsp;查询
+                            <i class="fa fa-search"></i>&nbsp;查询
                         </button>
                         <button type="button" id="btnAll" class="layui-btn">
                             <i class="fa fa-bars" aria-hidden="true"></i>&nbsp;&nbsp;全部
@@ -86,6 +86,99 @@
         </a>
     </script>
 
+    <!-- 内容05: 弹出层表单 -->
+    <div class="layerArea" style="display: none;padding: 40px 0 0 30px ">
+        <form class="layui-form" id="layerForm" lay-filter="layerForm">
+            {% csrf_token %}
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" for="sno"><b>学号：</b></label>
+                <div class="layui-input-inline">
+                    <input type="text" id="sno" name="sno" class="layui-input">
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+                <label class="layui-form-label" for="name"><b>姓名：</b></label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" class="layui-input">
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" for="gender"><b>性别：</b></label>
+                <div class="layui-input-inline">
+                    <select id="gender" name="gender" lay-search="">
+                        <option value="">请选择</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+                <label class="layui-form-label" for="brithday"><b>出生日期：</b></label>
+                <div class="layui-input-inline">
+                    <input type="text" id="brithday" name="brithday" class="layui-input" placeholder="请选择日期">
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" for="mobile"><b>手机号码：</b></label>
+                <div class="layui-input-inline">
+                    <input type="text" id="mobile" name="mobile" class="layui-input">
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+                <label class="layui-form-label" for="email"><b>邮箱地址：</b></label>
+                <div class="layui-input-inline">
+                    <input type="text" id="email" name="email" class="layui-input">
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" for="address"><b>家庭住址：</b></label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="address" name="address" class="layui-input" style="width:248%;">
+                        <span class="error-msg" style="color:red; position: absolute"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" for="faculty"><b>所在院系：</b></label>
+                <div class="layui-input-inline">
+                    <select type="text" id="faculty" name="faculty" lay-search="" lay-filter="faculty">
+                        <option value="">请选择</option>
+                    </select>
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+                <label class="layui-form-label" for="major"><b>所学专业：</b></label>
+                <div class="layui-input-inline">
+                    <select type="text" id="major" name="major" lay-search="" lay-filter="major">
+                        <option value="">请选择</option>
+                    </select>
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" for="start_date"><b>入学时间：</b></label>
+                <div class="layui-input-inline">
+                    <input type="text" id="start_date" name="start_date" class="layui-input" placeholder="请选择日期">
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+                <label class="layui-form-label" for="status"><b>状态：</b></label>
+                <div class="layui-input-inline">
+                    <select type="text" id="status" name="status" lay-search="">
+                        <option value="">请选择</option>
+                        <option value="在校">在校</option>
+                        <option value="毕业">毕业</option>
+                        <option value="休学">休学</option>
+                        <option value="开除">开除</option>
+                    </select>
+                    <span class="error-msg" style="color:red; position: absolute"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+
 {% endblock %}
 
 <!-- 添加JS -->
@@ -104,6 +197,8 @@
             loadMajorByFaculty();
             // 所有的按钮的响应
             buttonClick();
+            // 初始化日期选择框
+            initDatePicker();
         });
 
         // 初始化表格
@@ -164,7 +259,11 @@
                             // 通过jquery遍历加入下拉框
                             $.each(res.data, (index, value) => {
                                 // 新建option标签
-                                $('<option>').attr('value', value.id).text(value.name).appendTo('#q_faculty');
+                                let item = $('<option>').attr('value', value.id).text(value.name);
+                                // 附加到查询框
+                                item.appendTo($('#q_faculty'));
+                                // 附加到弹出层
+                                item.appendTo($('#faculty'));
                             })
                             // 重新渲染
                             form.render();
@@ -185,13 +284,14 @@
                 // 示例化一个form
                 let form = layui.form;
 
-                // 侦听院系下来的选择框
+                // 侦听查询区域院系的下拉选择框
                 form.on('select(q_faculty)', function (data) {
+                    // 获取选择的院系的编号
                     let selectData = data.value;
-                    // 获取选择传递的院系编号
+                    // 清空下拉框
                     $('#q_major').html("");
                     $('<option>').attr('value', "").text("请选择专业").appendTo('#q_major');
-                    // 使用ajax请求
+                    // Ajax请求
                     $.ajax({
                         url: "{% url 'query_major' %}",
                         method: 'post',
@@ -206,12 +306,49 @@
                                 $.each(res.data, (index, value) => {
                                     // 新建option标签
                                     $('<option>').attr('value', value.id).text(value.name).appendTo('#q_major');
-                                })
+
+
+                                });
                                 // 重新渲染
                                 form.render();
                             } else {
                                 layui.use('layui', function () {
-                                    layui.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
+                                    layer.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
+                                })
+                            }
+                        }
+                    })
+                });
+
+                // 侦听弹出框院系下拉选择
+                form.on('select(faculty)', function (data) {
+                    // 获取选择的院系的编号
+                    let selectData = data.value;
+                    // 清空下拉框
+                    $('#major').html("");
+                    $('<option>').attr('value', "").text("请选择").appendTo('#major');
+                    // Ajax请求
+                    $.ajax({
+                        url: "{% url 'query_major' %}",
+                        method: 'post',
+                        data: {
+                            id: selectData,
+                            csrfmiddlewaretoken: "{{ csrf_token }}"
+                        },
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.status) {
+                                // 通过jquery遍历加入下拉框
+                                $.each(res.data, (index, value) => {
+                                    // 新建option标签
+                                    $('<option>').attr('value', value.id).text(value.name).appendTo('#major');
+
+                                });
+                                // 重新渲染
+                                form.render();
+                            } else {
+                                layui.use('layui', function () {
+                                    layer.msg(res.error, {icon: 2, area: ['350px', '150px'], time: -1, btn: ['关闭']});
                                 })
                             }
                         }
@@ -235,7 +372,13 @@
             $('#btnAll').on('click', function () {
                 location.reload();
             });
+
+            // 添加按钮
+            $('#btnAdd').on('click', function () {
+                loadLayer();
+            })
         }
+
 
         // 监听复选框的状态
         function checkboxStatus() {
@@ -249,6 +392,41 @@
                 })
             })
         }
+
+        // 加载弹出框
+        function loadLayer() {
+            layui.use(['layer', 'form'], function () {
+                let layer = layui.layer;
+                let form = layer.form;
+
+                layer.open({
+                    type: 1,
+                    title: '添加',
+                    area: ['50%', '80%'],
+                    content: $('.layerArea'),
+                    btn: ['确定', '取消'],
+                    resize: false,
+                })
+            })
+        }
+
+        // 初始化日期选择框
+        function initDatePicker() {
+            layui.use('laydate', function () {
+                // 实例化
+                let laydate = layui.laydate;
+
+                // 渲染
+                laydate.render({
+                    elem: '#brithday',
+                });
+                // 渲染
+                laydate.render({
+                    elem: '#start_date',
+                });
+            });
+        }
+
     </script>
 {% endblock %}
 
