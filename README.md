@@ -1,5 +1,5 @@
 # 学生信息管理系统 
-  ## 作者：BeanZhu
+  ### @作者：BeanZhu
   ### 基于：Python v3.9.6 , Django v3.2.6, Layui v2.6.8
 
 ## 院系管理
